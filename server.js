@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 const { Wish } = require("./models/wish");
 
 const app = express();
-const port = process.env.PORT || 4000;
+const port = process.env.PORT || 8080;
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 
