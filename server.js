@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 const { Wish } = require("./models/wish");
 
 const app = express();
-const port = process.env.PORT || 8080;
+const port = process.env.PORT || 4000;
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 
@@ -28,7 +28,7 @@ const start = async () => {
   try {
     mongoose.set("strictQuery", true);
     await mongoose.connect(process.env.MONGO_URI);
-    app.listen(3000, () =>
+    app.listen(port, () =>
       console.log(`Server started on port ${port} and connected to DB`)
     );
   } catch (error) {
