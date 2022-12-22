@@ -1,5 +1,6 @@
 require("dotenv").config();
 const express = require("express");
+const cors = require("cors");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const { Wish } = require("./models/wish");
@@ -8,13 +9,23 @@ const app = express();
 const port = process.env.PORT || 4000;
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(cors());
+
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  next();
+});
 
 app.get("/", (req, res) => {
   return res.json({ message: "Hi, I am Think-Peace's server" });
 });
 
 app.get("/wishes", async (req, res) => {
-  const allWishes = await Wish.find();
+  const allWishes = await Wish.find({});
   return res.status(200).json(allWishes);
 });
 
