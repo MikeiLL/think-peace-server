@@ -1,8 +1,10 @@
 const mongoose = require("mongoose");
 
 const BaseSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  country: { type: String, required: true },
+  fullAdress: { type: String, required: true },
+  city: { type: String, required: false },
+  country: { type: String, required: false },
+  countryCode: { type: String, required: false },
   position: {
     lat: { type: Number, required: true },
     lng: { type: Number, required: true },

@@ -4,6 +4,7 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const { Wish } = require("./models/wish");
+const { getGeocode } = require("./helper/getGeocode");
 
 const port = process.env.PORT || 4000;
 const app = express();
@@ -29,9 +30,37 @@ app.get("/wishes", async (req, res) => {
 });
 
 app.post("/add-wish", async (req, res) => {
-  console.log(req.body);
-  const newWish = new Wish({ ...req.body });
+  const fromCoordinates = await getGeocode(req.body.from);
+  const toCoordinates = await getGeocode(req.body.to);
+
+  const data = {
+    from: {
+      fullAdress: fromCoordinates?.fullAdress,
+      city: fromCoordinates?.city,
+      country: fromCoordinates?.country,
+      countryCode: fromCoordinates?.countryCode,
+      position: {
+        lat: fromCoordinates?.lat,
+        lng: fromCoordinates?.lng,
+      },
+    },
+    to: {
+      fullAdress: toCoordinates?.fullAdress,
+      city: toCoordinates?.city,
+      country: toCoordinates?.country,
+      countryCode: toCoordinates?.countryCode,
+      position: {
+        lat: toCoordinates?.lat,
+        lng: toCoordinates?.lng,
+      },
+    },
+  };
+
+  const newWish = new Wish(data);
   const insertedWish = await newWish.save();
+
+  if (!insertedWish) return res.status(200).json({ error: "Invalid addres" });
+
   return res.status(201).json(insertedWish);
 });
 
