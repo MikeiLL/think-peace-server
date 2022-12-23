@@ -28,7 +28,8 @@ app.get("/wishes", async (req, res) => {
   return res.status(200).json(allWishes);
 });
 
-app.post("/wish", async (req, res) => {
+app.post("/add-wish", async (req, res) => {
+  console.log(req.body);
   const newWish = new Wish({ ...req.body });
   const insertedWish = await newWish.save();
   return res.status(201).json(insertedWish);
