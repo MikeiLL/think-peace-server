@@ -14,6 +14,7 @@ const BaseSchema = new mongoose.Schema({
 const WishSchema = new mongoose.Schema({
   from: BaseSchema,
   to: BaseSchema,
+  hashTag: { type: String, required: true },
 });
 
 const Wish = mongoose.model("Wish", WishSchema);
