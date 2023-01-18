@@ -11,12 +11,19 @@ const BaseSchema = new mongoose.Schema({
   },
 });
 
-const WishSchema = new mongoose.Schema({
-  from: BaseSchema,
-  to: BaseSchema,
-  hashTag: { type: String, required: true },
-});
+const WishSchema = new mongoose.Schema(
+  {
+    from: BaseSchema,
+    to: BaseSchema,
+    hashTag: { type: String, required: true },
+  },
+  { timestamps: true }
+);
+
+WishSchema.index({ createdAt: 1 }, { expireAfterSeconds: 86400 });
 
 const Wish = mongoose.model("Wish", WishSchema);
+
+Wish.createIndexes();
 
 module.exports = { Wish };
