@@ -36,7 +36,9 @@ app.post("/add-wish", async (req, res) => {
 
   const data = {
     from: {
-      fullAdress: fromCoordinates?.fullAdress,
+      fullAdress: fromCoordinates.fullAdress
+        ? fromCoordinates.fullAdress
+        : req.body.from,
       city: fromCoordinates?.city,
       country: fromCoordinates?.country,
       countryCode: fromCoordinates?.countryCode,
@@ -46,7 +48,9 @@ app.post("/add-wish", async (req, res) => {
       },
     },
     to: {
-      fullAdress: toCoordinates?.fullAdress,
+      fullAdress: toCoordinates.fullAdress
+        ? toCoordinates.fullAdress
+        : req.body.to,
       city: toCoordinates?.city,
       country: toCoordinates?.country,
       countryCode: toCoordinates?.countryCode,

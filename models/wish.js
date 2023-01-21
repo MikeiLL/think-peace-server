@@ -6,8 +6,8 @@ const BaseSchema = new mongoose.Schema({
   country: { type: String, required: false },
   countryCode: { type: String, required: false },
   position: {
-    lat: { type: Number, required: true },
-    lng: { type: Number, required: true },
+    lat: { type: Number, required: false },
+    lng: { type: Number, required: false },
   },
 });
 
