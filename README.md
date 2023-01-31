@@ -10,4 +10,3 @@
 
 ## Atlas MongoDB Compas
 https://cloud.mongodb.com
-thinkpeacedbuser profusely-footboard-crested-proud
