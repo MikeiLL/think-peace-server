@@ -30,8 +30,8 @@ app.get("/wishes", async (req, res) => {
 });
 
 app.post("/add-wish", async (req, res) => {
-  const fromCoordinates = await getGeocode(req.body.from);
-  const toCoordinates = await getGeocode(req.body.to);
+  const fromCoordinates = await getGeocode(req.body.from.label);
+  const toCoordinates = await getGeocode(req.body.to.label);
   const { hashTag } = req.body;
 
   const data = {
