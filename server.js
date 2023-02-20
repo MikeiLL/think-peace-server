@@ -21,6 +21,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 
 app.get("/", (req, res) => {
+
   return res.json({ message: "Hi, I am Think-Peace's server" });
 });
 
@@ -30,8 +31,17 @@ app.get("/wishes", async (req, res) => {
 });
 
 app.post("/add-wish", async (req, res) => {
-  const fromCoordinates = await getGeocode(req.body.from.label);
-  const toCoordinates = await getGeocode(req.body.to.label);
+  let fromCoordinates;
+  let toCoordinates;
+  try {
+    fromCoordinates = await getGeocode(req.body.from.label);
+    toCoordinates = await getGeocode(req.body.to.label);
+  } catch (error) {
+    console.log(error);
+    // Return a basic request error.
+    return res.status(400).json({error: "Invalid address"});
+  }
+
   const { hashTag } = req.body;
 
   const data = {
@@ -61,11 +71,14 @@ app.post("/add-wish", async (req, res) => {
     },
     hashTag,
   };
+  console.log({"hashTag": hashTag});
+  return res.status(200).json({ error: "Just testing" });
 
   const newWish = new Wish(data);
   const insertedWish = await newWish.save();
 
   if (!insertedWish) return res.status(200).json({ error: "Invalid addres" });
+
 
   return res.status(201).json(insertedWish);
 });
