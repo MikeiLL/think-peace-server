@@ -39,7 +39,7 @@ app.post("/add-wish", async (req, res) => {
   } catch (error) {
     console.log(error);
     // Return a basic request error.
-    return res.status(400).json({error: "Invalid address"});
+    return res.status(400).json({error: "Is that a valid address?"});
   }
 
   const { hashTag } = req.body;
@@ -71,13 +71,11 @@ app.post("/add-wish", async (req, res) => {
     },
     hashTag,
   };
-  console.log({"hashTag": hashTag});
-  return res.status(200).json({ error: "Just testing" });
 
   const newWish = new Wish(data);
   const insertedWish = await newWish.save();
 
-  if (!insertedWish) return res.status(200).json({ error: "Invalid addres" });
+  if (!insertedWish) return res.status(400).json({ error: "Error recording wish." });
 
 
   return res.status(201).json(insertedWish);
