@@ -17,8 +17,8 @@ app.use((req, res, next) => {
   );
   next();
 });
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.json());
+app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded post data
+app.use(express.json()); // for parsing application/json post data
 
 app.get("/", (req, res) => {
 
