@@ -4,7 +4,8 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const { Wish } = require("./models/wish");
-const { getGeocode } = require("./helper/getGeocode");
+const {getGeocode} = require("./helper/getGeocode");
+const querystring = require('node:querystring');
 
 const port = process.env.PORT || 4000;
 const app = express();
@@ -26,8 +27,15 @@ app.get("/", (req, res) => {
 });
 
 app.get("/wishes", async (req, res) => {
-  const allWishes = await Wish.find({});
-  return res.status(200).json(allWishes);
+  let result;
+  if (req.query.pin) {
+    await Wish.find({_id: req.query.pin}).then((wishes) => {
+      result = wishes[0] || {};
+    });
+  } else {
+    result = await Wish.find({});
+  }
+  return res.status(200).json(result);
 });
 
 app.post("/add-wish", async (req, res) => {
