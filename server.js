@@ -28,7 +28,7 @@ app.get("/", (req, res) => {
 
 app.get("/wishes", async (req, res) => {
   let result;
-  if (req.query.pin) {
+  if ((req.query.pin) && mongoose.Types.ObjectId.isValid(req.query.pin)) {
     await Wish.find({_id: req.query.pin}).then((wishes) => {
       result = wishes[0] || {};
     });
