@@ -35,6 +35,7 @@ app.get("/wishes", async (req, res) => {
   } else {
     result = await Wish.find({});
   }
+  console.log({'result': result})
   return res.status(200).json(result);
 });
 
@@ -56,29 +57,32 @@ app.post("/add-wish", async (req, res) => {
     from: {
       fullAdress: fromCoordinates.fullAdress
         ? fromCoordinates.fullAdress
-        : req.body.from,
-      city: fromCoordinates?.city,
-      country: fromCoordinates?.country,
-      countryCode: fromCoordinates?.countryCode,
+        : req.body.from.label || ''+req.body.from,
+      city: fromCoordinates?.city || '',
+      country: fromCoordinates?.country || '',
+      countryCode: fromCoordinates?.countryCode || '',
       position: {
-        lat: fromCoordinates?.lat,
-        lng: fromCoordinates?.lng,
+        lat: fromCoordinates?.lat || '',
+        lng: fromCoordinates?.lng || '',
       },
     },
     to: {
       fullAdress: toCoordinates.fullAdress
         ? toCoordinates.fullAdress
-        : req.body.to,
-      city: toCoordinates?.city,
-      country: toCoordinates?.country,
-      countryCode: toCoordinates?.countryCode,
+        : req.body.to.label || ''+req.body.to,
+      city: toCoordinates?.city || '',
+      country: toCoordinates?.country || '',
+      countryCode: toCoordinates?.countryCode || '',
       position: {
-        lat: toCoordinates?.lat,
-        lng: toCoordinates?.lng,
+        lat: toCoordinates?.lat || '',
+        lng: toCoordinates?.lng || '',
       },
     },
     hashTag,
   };
+
+  console.log("data");
+  console.log(data);
 
   const newWish = new Wish(data);
   const insertedWish = await newWish.save();
