@@ -43,6 +43,10 @@ app.post("/add-wish", async (req, res) => {
   let fromCoordinates;
   let toCoordinates;
   try {
+    // Get coordinates from the address.
+    // getGeocode doesn't always find a match, for example, for
+    // Guitar, Spain. In which case, the empty strings are used.
+    // (Below in creation of the data object)
     fromCoordinates = await getGeocode(req.body.from.label);
     toCoordinates = await getGeocode(req.body.to.label);
   } catch (error) {
