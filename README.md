@@ -10,3 +10,6 @@
 
 ## Atlas MongoDB Compas
 https://cloud.mongodb.com
+
+## Run locally
+`yarn start` (or `npm run start`)
