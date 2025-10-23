@@ -1,6 +1,29 @@
 const NodeGeocoder = require("node-geocoder");
 
-const getGeocode = async (address) => {
+const stubs = {
+  "somewhere": {
+    "fullAdress": "Somewhere",
+    "city": "",
+    "country": "",
+    "countryCode": "",
+    "position": {
+      "lat": null,
+      "lng": null
+    }
+  },
+  "earth": {
+    "fullAdress": "Earth",
+    "city": "",
+    "country": "",
+    "countryCode": "",
+    "position": {
+      "lat": null,
+      "lng": null
+    }
+  },
+}
+
+const getGeocode = async (address_label) => {
   const options = {
     provider: "google",
 
@@ -10,10 +33,13 @@ const getGeocode = async (address) => {
     formatter: null, // 'gpx', 'string', ...
   };
 
+  const stub = stubs[address_label.toLowerCase()];
+  if (stub) return stub;
+
   const geocoder = NodeGeocoder(options);
 
   // Using callback
-  const res = await geocoder.geocode(address);
+  const res = await geocoder.geocode(address_label);
   const resObj = res[0];
   const resp = {
     fullAdress: resObj?.formattedAddress,
