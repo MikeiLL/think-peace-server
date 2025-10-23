@@ -34,10 +34,8 @@ app.get("/wishes", async (req, res) => {
     });
   } else {
     result = await Wish.find({});
-    /* result.unshift(defaultWish()); */
+    result.unshift(defaultWish());
   }
-  console.log(result[0]);
-  console.log(result[3]);
   return res.status(200).json(result);
 });
 
