@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const BaseSchema = new mongoose.Schema({
-  fullAdress: { type: String, required: true },
+  fullAddress: { type: String, required: true },
   city: { type: String, required: false },
   country: { type: String, required: false },
   countryCode: { type: String, required: false },

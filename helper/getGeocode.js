@@ -2,7 +2,7 @@ const NodeGeocoder = require("node-geocoder");
 
 const stubs = {
   "somewhere": {
-    "fullAdress": "Somewhere",
+    "fullAddress": "Somewhere",
     "city": "",
     "country": "",
     "countryCode": "",
@@ -12,7 +12,7 @@ const stubs = {
     }
   },
   "earth": {
-    "fullAdress": "Earth",
+    "fullAddress": "Earth",
     "city": "",
     "country": "",
     "countryCode": "",
@@ -42,7 +42,7 @@ const getGeocode = async (address_label) => {
   const res = await geocoder.geocode(address_label);
   const resObj = res[0];
   const resp = {
-    fullAdress: resObj?.formattedAddress,
+    fullAddress: resObj?.formattedAddress,
     lat: resObj?.latitude,
     lng: resObj?.longitude,
     city: resObj?.city,
