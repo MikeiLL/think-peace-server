@@ -5,6 +5,7 @@ const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const { Wish } = require("./models/wish");
 const {getGeocode} = require("./helper/getGeocode");
+const {defaultWish} = require("./helper/defaultWish");
 const querystring = require('node:querystring');
 
 const port = process.env.PORT || 4000;
@@ -22,7 +23,6 @@ app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x
 app.use(express.json()); // for parsing application/json post data
 
 app.get("/", (req, res) => {
-
   return res.json({ message: "Hi, I am Think-Peace's server" });
 });
 
@@ -34,8 +34,10 @@ app.get("/wishes", async (req, res) => {
     });
   } else {
     result = await Wish.find({});
+    /* result.unshift(defaultWish()); */
   }
-  console.log({'result': result})
+  console.log(result[0]);
+  console.log(result[3]);
   return res.status(200).json(result);
 });
 
