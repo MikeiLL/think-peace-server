@@ -9,6 +9,66 @@ const {defaultWish} = require("./helper/defaultWish");
 const querystring = require('node:querystring');
 
 const port = process.env.PORT || 4000;
+
+const webPush = require('web-push');
+
+if (!process.env.VAPID_PUBLIC_KEY || !process.env.VAPID_PRIVATE_KEY) {
+  console.log(
+    "You must set the VAPID_PUBLIC_KEY and VAPID_PRIVATE_KEY " +
+      "environment variables. You can use the following ones:"
+  );
+  console.log(webPush.generateVAPIDKeys());
+  return;
+}
+webPush.setVapidDetails(
+  'mailto:mike@mzoo.org',
+  process.env.VAPID_PUBLIC_KEY,
+  process.env.VAPID_PRIVATE_KEY,
+);
+
+// This is the same output of calling JSON.stringify on a PushSubscription
+/* const pushSubscription = {
+  endpoint: '.....',
+  keys: {
+    auth: '.....',
+    p256dh: '.....'
+  }
+};
+
+webPush.sendNotification(pushSubscription, 'Your Push Payload Text'); */
+
+
+module.exports = function (app, route) {
+  app.get(route + "vapidPublicKey", function (req, res) {
+    res.send(process.env.VAPID_PUBLIC_KEY);
+  });
+
+  app.post(route + "register", function (req, res) {
+    // A real world application would store the subscription info.
+    res.sendStatus(201);
+  });
+
+  app.post(route + "sendNotification", function (req, res) {
+    const subscription = req.body.subscription;
+    const payload = null;
+    const options = {
+      TTL: req.body.ttl,
+    };
+
+    setTimeout(function () {
+      webPush
+        .sendNotification(subscription, payload, options)
+        .then(function () {
+          res.sendStatus(201);
+        })
+        .catch(function (error) {
+          res.sendStatus(500);
+          console.log(error);
+        });
+    }, req.body.delay * 1000);
+  });
+};
+
 const app = express();
 app.use(cors());
 app.use((req, res, next) => {
@@ -21,9 +81,41 @@ app.use((req, res, next) => {
 });
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded post data
 app.use(express.json()); // for parsing application/json post data
+const path = require('path');
+app.get("/scripts/index.js", (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.js'));
+});
+
+app.get("/service-worker.js", (req, res) => {
+  res.sendFile(path.join(__dirname, 'service-worker.js'));
+});
+
+app.get("/vapidPublicKey", (req, res) => {
+  res.send(process.env.VAPID_PUBLIC_KEY);
+});
 
 app.get("/", (req, res) => {
-  return res.json({ message: "Hi, I am Think-Peace's server" });
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+app.post("/register", (req, res) => {
+  console.log(req);
+  res.status(201).json({});
+  webPush.sendNotification(req.body, JSON.stringify({"title": "You are subscribed"})).catch(err => console.log(err));
+});
+
+app.post("/sendNotification", (req, res) => {
+  console.log(req.body.subscription);
+
+  webPush.sendNotification(req.body.subscription, 'Your Push Payload Text');
+});
+
+app.post('/remove-subscription', (request, response) => {
+  // TODO: implement handler for /remove-subscription
+  // src: https://web.dev/articles/codelab-notifications-push-server
+  console.log('TODO: MAYBE Implement handler for /remove-subscription');
+  console.log('Request body: ', request.body);
+  response.sendStatus(200);
 });
 
 app.get("/wishes", async (req, res) => {
