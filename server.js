@@ -100,26 +100,29 @@ app.get("/", (req, res) => {
 });
 
 app.post("/register",  async (req, res) => {
-  console.log(req);
+  console.log(req.body);
+  console.log(req.body.subscription);
+  const sub = req.body.subscription;
+  try {
+    const newPushSubscription = new PushSub({endpoint: sub.endpoint, keys: sub.keys});
+    await newPushSubscription.save();
+  } catch (e) {
+    console.error(e);
+    //TODO what kind of error did we actually get? (eg MongoServerError)
+  }
+  webPush.sendNotification(sub, JSON.stringify({"title": "You are subscribed"}))
+    .catch(err => console.log(err));
+
   res.status(201).json({});
-
-
-  /* const newPushSubscription = new PushSub(data);
-  await newPushSubscription.save(); */
-  webPush.sendNotification(req.body, JSON.stringify({"title": "You are subscribed"})).catch(err => console.log(err));
 });
 
 app.post("/sendNotification", (req, res) => {
-  console.log(req.body.subscription);
-
   webPush.sendNotification(req.body.subscription, 'Your Push Payload Text');
 });
 
-app.post('/removeSubscription', (request, response) => {
+app.post('/removeSubscription', async (request, response) => {
   const sub = request.body;
-  console.log('Request sub: ', sub.subscription_endpoint);
-  const result = PushSub.deleteOne({subscription_endpoint: {$eq: sub.subscription_endpoint}});
-  console.log(result);
+  await PushSub.findOneAndDelete({endpoint: sub.subscription_endpoint}).exec();
   response.sendStatus(204);
 });
 
