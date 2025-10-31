@@ -87,6 +87,11 @@ app.get("/scripts/index.js", (req, res) => {
   res.sendFile(path.join(__dirname, 'index.js'));
 });
 
+app.get("/favicon.png", (req, res) => {
+  console.log("got a file");
+  res.sendFile(path.join(__dirname, 'favicon.png'));
+});
+
 app.get("/service-worker.js", (req, res) => {
   res.sendFile(path.join(__dirname, 'service-worker.js'));
 });
@@ -107,7 +112,7 @@ app.post("/register",  async (req, res) => {
     const newPushSubscription = new PushSub({endpoint: sub.endpoint, keys: sub.keys});
     await newPushSubscription.save();
   } catch (e) {
-    console.error(e);
+    //console.error(e);
     //TODO what kind of error did we actually get? (eg MongoServerError)
   }
   webPush.sendNotification(sub, JSON.stringify({"title": "You are subscribed"}))
