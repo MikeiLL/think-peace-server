@@ -4,6 +4,7 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const { Wish } = require("./models/wish");
+const { PushSub } = require("./models/pushsub");
 const {getGeocode} = require("./helper/getGeocode");
 const {defaultWish} = require("./helper/defaultWish");
 const querystring = require('node:querystring');
@@ -98,9 +99,13 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-app.post("/register", (req, res) => {
+app.post("/register",  async (req, res) => {
   console.log(req);
   res.status(201).json({});
+
+
+  /* const newPushSubscription = new PushSub(data);
+  await newPushSubscription.save(); */
   webPush.sendNotification(req.body, JSON.stringify({"title": "You are subscribed"})).catch(err => console.log(err));
 });
 
@@ -110,12 +115,12 @@ app.post("/sendNotification", (req, res) => {
   webPush.sendNotification(req.body.subscription, 'Your Push Payload Text');
 });
 
-app.post('/remove-subscription', (request, response) => {
-  // TODO: implement handler for /remove-subscription
-  // src: https://web.dev/articles/codelab-notifications-push-server
-  console.log('TODO: MAYBE Implement handler for /remove-subscription');
-  console.log('Request body: ', request.body);
-  response.sendStatus(200);
+app.post('/removeSubscription', (request, response) => {
+  const sub = request.body;
+  console.log('Request sub: ', sub.subscription_endpoint);
+  const result = PushSub.deleteOne({subscription_endpoint: {$eq: sub.subscription_endpoint}});
+  console.log(result);
+  response.sendStatus(204);
 });
 
 app.get("/wishes", async (req, res) => {
@@ -184,7 +189,7 @@ app.post("/add-wish", async (req, res) => {
   const insertedWish = await newWish.save();
 
   if (!insertedWish) return res.status(400).json({ error: "Error recording wish." });
-
+  // Broadcast notifications here.
 
   return res.status(201).json(insertedWish);
 });

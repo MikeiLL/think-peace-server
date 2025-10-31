@@ -52,6 +52,32 @@ navigator.serviceWorker.ready
     }),
   });
 
+  document.getElementById('unDoIt').onclick = function () {
+    console.log("undoing it");
+    navigator.serviceWorker.ready.then((request) => {
+      request.pushManager.getSubscription().then((subscription) => {
+        console.log("got a subscription remove")
+        console.log(subscription);
+        subscription && subscription
+          .unsubscribe()
+          .then((successful) => {
+            fetch('/removeSubscription', {
+              method: 'post',
+              headers: {
+                'Content-type': 'application/json'
+              },
+              body: JSON.stringify({
+                subscription_endpoint: subscription.endpoint,
+              }),
+            });
+          })
+          .catch((e) => {
+            // Unsubscribing failed
+          });
+      });
+    });
+
+  }
   document.getElementById('doIt').onclick = function () {
     console.log("doing it");
     const delay = document.getElementById('notification-delay').value;
@@ -67,8 +93,6 @@ navigator.serviceWorker.ready
       },
       body: JSON.stringify({
         subscription: subscription,
-        delay: delay,
-        ttl: ttl,
       }),
     });
   };
