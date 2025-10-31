@@ -127,8 +127,7 @@ app.post('/removeSubscription', async (request, response) => {
 });
 
 app.get("/wishes", async (req, res) => {
-  try {
-    let result;
+  let result;
   if ((req.query.pin) && mongoose.Types.ObjectId.isValid(req.query.pin)) {
     await Wish.find({_id: req.query.pin}).then((wishes) => {
       result = wishes[0] || {};
@@ -138,11 +137,6 @@ app.get("/wishes", async (req, res) => {
     result.unshift(defaultWish());
   }
   return res.status(200).json(result);
-  } catch (e) {
-    console.error(e);
-    return res.status(500).json(e);
-  }
-
 });
 
 app.post("/add-wish", async (req, res) => {
