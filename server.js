@@ -203,21 +203,11 @@ app.post("/add-wish", async (req, res) => {
       },
       endpoint: sub.endpoint,
     };
-    /* FROM CLIENT: {
-  endpoint: 'https://fcm.googleapis.com/fcm/send/dbgpG8OFTZk:APA91bHG8bqBcbVD7AiwMhmuiDHE3-an_EkZ3moum5t4NqG1pMdofoGzP-W70jflV4mzabVoi_KT7DZ9N0RPPETyUpKMPjAERzYu2z5T63eApIfx3V1Cjg6M43B3BqvhDz1nAhki79D_',
-  expirationTime: null,
-  keys: {
-    p256dh: 'BGYHgHr9h1RZ6W80q8YJGrVyHPeOoz3o0cQ8PQnumqE65ysB6z6kiIbmqhIypzSDT2QiAYKsPVxgBbLYcO4ju8M',
-    auth: 'ymI5UpEvrdmL4gqQBRLipQ'
-  }
-} */
     try {
-      console.log("SUB", subscription, typeof(subscription));
-      let thing = await webPush.sendNotification(subscription, JSON.stringify({
+      await webPush.sendNotification(subscription, JSON.stringify({
         "title": `New ThinkPeace Wish`,
         "body": `${data.hashTag} from ${data.from.fullAddress} to ${data.to.fullAddress}`
       }));
-      console.log("sendNotification", thing);
     } catch (err) {console.error(err);}
   }
 });
